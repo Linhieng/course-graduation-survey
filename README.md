@@ -17,5 +17,5 @@ git config -f .gitmodules submodule.server.branch refactor2
 git submodule update --init
 
 # 如果本地已经有初始化过，则可以通过下面命令更新内容
-git submodule update --init
+git submodule update --remote
 ```
