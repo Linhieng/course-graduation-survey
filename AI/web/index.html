@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AI 助手</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+</head>
+
+<body>
+    <h1>AI 助手</h1>
+    <button class="active-btn">激活AI助手<span id="active-status">未激活</span></button>
+    <br>
+    <label for="input">请输入内容</label>
+    <input type="text" id="input" >
+    <span class="hide answer-loading">思考中</span>
+    <div class="show-res"></div>
+    <script>
+        var socket
+
+        const inputEl = document.querySelector('#input');
+        const loading = document.querySelector('.answer-loading');
+        inputEl.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                socket.emit('message', inputEl.value);
+                inputEl.value = '';
+                loading.classList.remove('hide')
+            }
+        });
+
+        const activeBtnEl = document.querySelector('.active-btn')
+        const activeStatusEl  = document.querySelector('#active-status')
+        const resEl = document.querySelector('.show-res');
+        activeBtnEl.addEventListener('click', () => {
+            if (!socket) {
+                socket = io.connect('http://' + document.domain + ':' + location.port);
+            }
+
+            socket.on('connect', function () {
+                activeStatusEl.innerText = '已连接'
+                activeStatusEl.classList.add('active')
+            });
+            socket.on("close", () => {
+                activeStatusEl.innerText = '未连接'
+                activeStatusEl.classList.remove('active')
+            }) 
+
+            socket.on('response', function (data) {
+                loading.classList.add('hide')
+                if (data !== 'done') {
+                    resEl.innerText += data.content
+                } else {
+                    resEl.innerText += '\n\n\n\n'
+                }
+
+            });
+        })
+    </script>
+
+    <style>
+        .active {
+            color: skyblue;
+            font-size: bold;
+        }
+        .hide {
+            visibility: hidden;
+        }
+    </style>
+</body>
+
+</html>
