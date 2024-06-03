@@ -9,4 +9,4 @@
 [submodule "client-publish"]
 	path = client-publish
 	url = https://github.com/Linhieng/course-graduation-survey-client-publish.git
-	branch = old-main
+	branch = main
